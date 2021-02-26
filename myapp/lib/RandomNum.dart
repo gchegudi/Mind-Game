@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:toast/toast.dart';
 
 class RandomNum extends StatefulWidget {
   @override
@@ -9,9 +10,8 @@ class RandomNum extends StatefulWidget {
 }
 
 class _RandomNumbers extends State<RandomNum> {
-  void initState() {
-    super.initState();
-  }
+  CountDownController _controller = CountDownController();
+  CountDownController controller = CountDownController();
 
   var num1 = new TextEditingController();
   var num2 = new TextEditingController();
@@ -21,8 +21,10 @@ class _RandomNumbers extends State<RandomNum> {
 
   List<int> list = List();
   List<int> list1 = List();
+
   bool inVisible = true;
   bool invisible = true;
+  bool isEnable = false;
 
   List<int> _textFormFieldValues() {
     list1.clear();
@@ -43,11 +45,10 @@ class _RandomNumbers extends State<RandomNum> {
   }
 
   initScreen(BuildContext context) {
-    Widget countDownController;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Random Numbers'),
+        title: Text('Memory Master'),
       ),
       body: Center(
         child: Column(
@@ -61,7 +62,9 @@ class _RandomNumbers extends State<RandomNum> {
               child: _getRandomNumbers(),
             ),
             Visibility(visible: invisible, child: _getCountDownController()),
-            Container(child: _textFormField())
+            _getTimer(),
+            Container(child: _textFormField()),
+            _getRaisedButton()
           ],
         ),
       ),
@@ -93,7 +96,9 @@ class _RandomNumbers extends State<RandomNum> {
           children: <Widget>[
             Container(
               child: TextFormField(
+                enabled: isEnable,
                 controller: num1,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -110,7 +115,9 @@ class _RandomNumbers extends State<RandomNum> {
             ),
             Container(
               child: TextFormField(
+                enabled: isEnable,
                 controller: num2,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -127,7 +134,9 @@ class _RandomNumbers extends State<RandomNum> {
             ),
             Container(
               child: TextFormField(
+                enabled: isEnable,
                 controller: num3,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -144,7 +153,9 @@ class _RandomNumbers extends State<RandomNum> {
             ),
             Container(
               child: TextFormField(
+                enabled: isEnable,
                 controller: num4,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -161,7 +172,9 @@ class _RandomNumbers extends State<RandomNum> {
             ),
             Container(
               child: TextFormField(
+                enabled: isEnable,
                 controller: num5,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -178,7 +191,6 @@ class _RandomNumbers extends State<RandomNum> {
         SizedBox(
           height: 40,
         ),
-        _getRaisedButton()
       ],
     );
   }
@@ -195,7 +207,14 @@ class _RandomNumbers extends State<RandomNum> {
             child: Text(
               'Play Again',
             ),
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => RandomNum()));
+              });
+            },
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
           )),
@@ -204,10 +223,13 @@ class _RandomNumbers extends State<RandomNum> {
             color: Colors.black,
             textColor: Colors.white,
             child: Text(
-              'Submit',
+              'Check',
             ),
             onPressed: () {
               _equalValues(list, _textFormFieldValues());
+              if (_textFormFieldValues() == null) {
+                return _getToast("Enter Values");
+              }
             },
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -219,103 +241,90 @@ class _RandomNumbers extends State<RandomNum> {
 
   _equalValues(var list, list1) {
     if (list.length != list1.length) {
-      return _showAlertDialogforWrong();
+      return _getToast('Wrong');
     } else {
       for (var i = 0; i < list.length; i++) {
         if (list[i] != list1[i]) {
-          return _showAlertDialogforWrong();
+          return _getToast('Wrong');
         }
       }
     }
-    return _showAlertDialogforRight();
+    return _getToast('Correct');
   }
 
-  _showAlertDialogforRight() {
-    Widget okButton = FlatButton(
-      child: Text(
-        'Ok',
-      ),
-      onPressed: () {},
-    );
-    AlertDialog alert = AlertDialog(
-      title: Text(
-        'Correct',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20),
-      ),
-      content: Icon(
-        Icons.done,
-        color: Colors.blue,
-        size: 140,
-      ),
-      actions: [okButton],
-    );
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        });
+  _getToast(String message) {
+    ToastView.createView(message, context, Toast.TOP, Toast.BOTTOM,
+        Colors.black, Colors.white, 20, null);
   }
 
-  _showAlertDialogforWrong() {
-    Widget okButton = FlatButton(
-      child: Text('Ok'),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    AlertDialog alert = AlertDialog(
-      title: Text(
-        'wrong',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 20),
-      ),
-      content: Icon(
-        Icons.dangerous,
-        color: Colors.blue,
-        size: 140,
-      ),
-      actions: [okButton],
-    );
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        });
+  _getTimer() {
+    if (invisible == false) {
+      return _getCountDownController2();
+    } else {
+      return Container();
+    }
   }
 
   _getCountDownController() {
     CountDownController _controller = CountDownController();
-    return Center(
-      child: CircularCountDownTimer(
-        height: 100,
-        width: 100,
+    return CircularCountDownTimer(
+      height: 100,
+      width: 100,
+      duration: 9,
+      controller: _controller,
+      color: Colors.white,
+      fillColor: Colors.blue,
+      strokeWidth: 5.0,
+      textStyle: TextStyle(
+          fontSize: 22.0, color: Colors.black, fontWeight: FontWeight.bold),
+      isReverse: true,
+      isReverseAnimation: false,
+      isTimerTextShown: true,
+      onComplete: () {
+        setState(() {
+          invisible = false;
+        });
+        inVisible = false;
+        isEnable = true;
 
-        duration: 10,
-        controller: _controller,
-        color: Colors.white,
-        fillColor: Colors.blue,
-        strokeWidth: 5.0,
-        textStyle: TextStyle(
-            fontSize: 22.0, color: Colors.black, fontWeight: FontWeight.bold),
-        isReverse: true,
-
-        // true for reverse animation, false for forward animation
-        isReverseAnimation: false,
-
-        // Optional [bool] to hide the [Text] in this widget.
-        isTimerTextShown: true,
-
-        // Function which will execute when the Countdown Ends
-        onComplete: () {
-          setState(() {
-            invisible = false;
-          });
-          inVisible = false;
-          // Here, do whatever you want
-          print('Countdown Ended');
-        },
-      ),
+        print('Countdown Ended');
+      },
     );
+  }
+
+  _getCountDownController2() {
+    CountDownController _controller;
+    return (CircularCountDownTimer(
+      height: 100,
+      width: 100,
+      duration: 20,
+      controller: _controller,
+      color: Colors.white,
+      fillColor: Colors.blue,
+      strokeWidth: 5.0,
+      textStyle: TextStyle(
+          fontSize: 22.0, color: Colors.black, fontWeight: FontWeight.bold),
+      isReverse: true,
+      isReverseAnimation: false,
+      isTimerTextShown: true,
+      onComplete: () {
+        setState(() {
+          isEnable = false;
+        });
+
+        print('Countdown Ended');
+        _getTextFormFieldEmpty();
+      },
+    ));
+  }
+
+  _getTextFormFieldEmpty() {
+    if ((num1.text == "" || null) &&
+        (num2.text == "" || null) &&
+        (num3.text == "" || null) &&
+        (num4.text == "" || null) &&
+        (num5.text == "" || null)) {
+      return _getToast("TimeUp");
+    }
   }
 }

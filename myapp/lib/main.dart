@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'EnterButton.dart';
-import 'fCheck.dart';
+import 'RandomNum.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: FutureUse(),
+      home: RandomNum(),
     );
   }
 }

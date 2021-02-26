@@ -25,6 +25,8 @@ class FutureUse extends StatefulWidget {
 class _FutureUse extends State<FutureUse> {
   final FocusScopeNode _node = FocusScopeNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  CountDownController controller = CountDownController();
+  CountDownController _controller = CountDownController();
   @override
   @override
   void dispose() {
@@ -33,7 +35,7 @@ class _FutureUse extends State<FutureUse> {
 
   bool inVisible = true;
   bool invisible = true;
-  bool isEnable = true;
+  bool isEnable = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +59,11 @@ class _FutureUse extends State<FutureUse> {
                       child: _getRandomNumbers(),
                     ),
                     Visibility(
-                      visible: invisible,
-                      child: _getCountDownController(),
+                      visible: inVisible,
+                      child: _getCountDownController(controller, 5),
                     ),
                     _textFormField(),
-                    _getTextFormFieldsVisible(),
+                    _getTimer2()
                   ],
                 ),
               ),
@@ -219,23 +221,25 @@ class _FutureUse extends State<FutureUse> {
     );
   }
 
-  Widget _getTextFormFieldsVisible() {
+  _getTimer2() {
     if (invisible = false) {
-      return _getCountDownController1();
+      print('timer');
+      return _getCountDownController2(_controller, 10);
     } else {
+      print('Hello');
       return Container();
     }
   }
 
-  _getCountDownController() {
-    CountDownController _controller = CountDownController();
+  _getCountDownController(CountDownController controller, int duration) {
+    CountDownController controller;
     return Center(
       child: CircularCountDownTimer(
         height: 100,
         width: 100,
 
         duration: 5,
-        controller: _controller,
+        controller: controller,
         color: Colors.white,
         fillColor: Colors.blue,
         strokeWidth: 5.0,
@@ -255,6 +259,7 @@ class _FutureUse extends State<FutureUse> {
             invisible = false;
           });
           inVisible = false;
+          isEnable = true;
           // Here, do whatever you want
           print('Countdown Ended');
         },
@@ -262,14 +267,14 @@ class _FutureUse extends State<FutureUse> {
     );
   }
 
-  _getCountDownController1() {
-    CountDownController _controller = CountDownController();
+  _getCountDownController2(CountDownController _controller, int duration) {
+    CountDownController _controller;
     return Center(
       child: CircularCountDownTimer(
         height: 100,
         width: 100,
 
-        duration: 5,
+        duration: 10,
         controller: _controller,
         color: Colors.white,
         fillColor: Colors.blue,

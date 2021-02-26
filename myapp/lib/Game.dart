@@ -1,217 +1,78 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
-import 'package:flutter/services.dart';
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-
-class RandomNum extends StatefulWidget {
+class ListSet extends StatefulWidget {
   @override
-  _RandomNumbers createState() => _RandomNumbers();
+  _ListSet createState() => _ListSet();
 }
 
-class _RandomNumbers extends State<RandomNum> {
+class _ListSet extends State<ListSet> {
+  List<ListItem> _dropdownItems = [
+    ListItem(1, "GeeksforGeeks"),
+    ListItem(2, "Javatpoint"),
+    ListItem(3, "tutorialandexample"),
+    ListItem(4, "guru99"),
+    ListItem(5, "guru"),
+    ListItem(6, "Hello"),
+    ListItem(7, "Hai"),
+    ListItem(8, "How"),
+    ListItem(9, "Love"),
+  ];
+
+  List<DropdownMenuItem<ListItem>> _dropdownMenuItems;
+
+  ListItem _itemSelected;
+
   void initState() {
     super.initState();
+    _dropdownMenuItems = buildDropDownMenuItems(_dropdownItems);
+
+    _itemSelected = _dropdownMenuItems[5].value;
+  }
+
+  List<DropdownMenuItem<ListItem>> buildDropDownMenuItems(List listItems) {
+    List<DropdownMenuItem<ListItem>> items = List();
+    for (ListItem listItem in listItems) {
+      items.add(
+        DropdownMenuItem(
+          child: Text(listItem.name),
+          value: listItem,
+        ),
+      );
+    }
+    return items;
+  }
+
+  List<DropdownMenuItem<ListItem>> buildDropDownMenuItem1(List listItems) {
+    List<DropdownMenuItem<ListItem>> items = List();
+    for (ListItem listItem in listItems) {
+      items.add(
+        DropdownMenuItem(
+          child: Text(listItem.name),
+          value: listItem,
+        ),
+      );
+    }
+    return items;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: initScreen(context),
-    );
-  }
-
-  initScreen(BuildContext context) {
-    Widget countDownController;
-    return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text('Random Numbers'),
+        title: Text("DropDown Button Example"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          verticalDirection: VerticalDirection.down,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Container(
-              child: _getRandomNumbers(),
-            ),
-            countDownController = _getCountDownController(),
-            //Container(child: _textFormField())
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-_getRandomNumbers() {
-  List<int> list = [];
-  for (var i = 1; i <= 5; i++) {
-    list.add(new Random().nextInt(99));
-  }
-  return Text(
-      '$list'.replaceAll("[", "").replaceAll("]", "").replaceAll(",", " "),
-      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40));
-}
-/*
-Widget _textFormField() {
-  return Column(
-    children: <Widget>[
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        verticalDirection: VerticalDirection.down,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body: Column(
         children: <Widget>[
-          Container(
-            child: TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              ),
-              inputFormatters: [
-                new LengthLimitingTextInputFormatter(2),
-              ],
-            ),
-            width: 60,
-            height: 35,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Container(
-            child: TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              ),
-              inputFormatters: [
-                new LengthLimitingTextInputFormatter(2),
-              ],
-            ),
-            width: 60,
-            height: 35,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Container(
-            child: TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              ),
-              inputFormatters: [
-                new LengthLimitingTextInputFormatter(2),
-              ],
-            ),
-            width: 60,
-            height: 35,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Container(
-            child: TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              ),
-              inputFormatters: [
-                new LengthLimitingTextInputFormatter(2),
-              ],
-            ),
-            width: 60,
-            height: 35,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Container(
-            child: TextFormField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              ),
-              inputFormatters: [
-                new LengthLimitingTextInputFormatter(2),
-              ],
-            ),
-            width: 60,
-            height: 35,
-          ),
+          Text("We have selected ${_itemSelected.name}"),
         ],
       ),
-      SizedBox(
-        height: 40,
-      ),
-      _getRaisedButton()
-    ],
-  );
+    );
+  }
 }
 
-_getRaisedButton() {
-  return Container(
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Container(
-            child: RaisedButton(
-          color: Colors.black,
-          textColor: Colors.white,
-          child: Text(
-            'Play Again',
-          ),
-          onPressed: () {},
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        )),
-        Container(
-            child: RaisedButton(
-          color: Colors.black,
-          textColor: Colors.white,
-          child: Text(
-            'Submit',
-          ),
-          onPressed: () {},
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-        )),
-      ],
-    ),
-  );
-}*/
+class ListItem {
+  int value;
+  String name;
 
-Widget _getCountDownController() {
-  CountDownController _controller = CountDownController();
-  return Center(
-    child: CircularCountDownTimer(
-      height: 100,
-      width: 100,
-
-      duration: 7,
-      controller: _controller,
-      color: Colors.white,
-      fillColor: Colors.blue,
-      strokeWidth: 5.0,
-      textStyle: TextStyle(
-          fontSize: 22.0, color: Colors.black, fontWeight: FontWeight.bold),
-      isReverse: false,
-
-      // true for reverse animation, false for forward animation
-      isReverseAnimation: false,
-
-      // Optional [bool] to hide the [Text] in this widget.
-      isTimerTextShown: true,
-
-      // Function which will execute when the Countdown Ends
-      onComplete: () {
-        // Here, do whatever you want
-        print('Countdown Ended');
-      },
-    ),
-  );
+  ListItem(this.value, this.name);
 }
